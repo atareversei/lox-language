@@ -1,3 +1,5 @@
+package lox;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +36,6 @@ public class Scanner {
     Scanner(String source) {
         this.source = source;
     }
-
-
-
 
     List<Token> scanTokens() {
         while (!isAtEnd()) {
@@ -94,32 +93,6 @@ public class Scanner {
         }
     }
 
-    private char advance() {
-        return source.charAt(current++);
-    }
-
-    private void addToken(TokenType tokenType) {
-        addToken(tokenType, null);
-    }
-
-    private void addToken(TokenType tokenType, Object literal) {
-        String text = source.substring(start, current);
-        tokens.add(new Token(tokenType, text, literal, line));
-    }
-
-    private boolean match(char expected) {
-        if (isAtEnd()) return false;
-        if (source.charAt(current) != expected) return false;
-
-        current++;
-        return true;
-    }
-
-    private char peek() {
-        if (isAtEnd()) return '\0';
-        return source.charAt(current);
-    }
-
     private void slash() {
         if (match('/')) {
             while (peek() != '\n' && isAtEnd()) advance();
@@ -145,10 +118,6 @@ public class Scanner {
         addToken(TokenType.STRING, value);
     }
 
-    private boolean isDigit(char c) {
-        return c >= '0' && c <= '9';
-    }
-
     private void number() {
         while (isDigit(peek())) advance();
 
@@ -162,17 +131,47 @@ public class Scanner {
         addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
-    private char peekNext() {
-        if (current + 1 >= source.length()) return '\0';
-        return source.charAt(current + 1);
-    }
-
     private void identifier() {
         while (isAlphaNumeric(peek())) advance();
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
         if (type == null) type = TokenType.IDENTIFIER;
         addToken(type);
+    }
+
+    private char advance() {
+        return source.charAt(current++);
+    }
+
+    private boolean match(char expected) {
+        if (isAtEnd()) return false;
+        if (source.charAt(current) != expected) return false;
+
+        current++;
+        return true;
+    }
+
+    private char peek() {
+        if (isAtEnd()) return '\0';
+        return source.charAt(current);
+    }
+
+    private char peekNext() {
+        if (current + 1 >= source.length()) return '\0';
+        return source.charAt(current + 1);
+    }
+
+    private void addToken(TokenType tokenType) {
+        addToken(tokenType, null);
+    }
+
+    private void addToken(TokenType tokenType, Object literal) {
+        String text = source.substring(start, current);
+        tokens.add(new Token(tokenType, text, literal, line));
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     private boolean isAlpha(char c) {
