@@ -87,7 +87,7 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                Lox.error(line, "Unexpected character.");
+                    Lox.error(line, "Unexpected character.");
                 }
                 break;
         }
@@ -95,7 +95,7 @@ public class Scanner {
 
     private void slash() {
         if (match('/')) {
-            while (peek() != '\n' && isAtEnd()) advance();
+            while (peek() != '\n' && !isAtEnd()) advance();
         } else {
             addToken(TokenType.SLASH);
         }
