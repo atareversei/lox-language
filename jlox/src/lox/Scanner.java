@@ -96,8 +96,27 @@ public class Scanner {
     private void slash() {
         if (match('/')) {
             while (peek() != '\n' && !isAtEnd()) advance();
+        } else if(match('*')) {
+            blockComment();
         } else {
             addToken(TokenType.SLASH);
+        }
+    }
+
+    private void blockComment() {
+        int nestLevel = 1;
+        advance();
+
+        while (nestLevel > 0 && !isAtEnd()) {
+            char next = advance();
+
+            if (next == '\n') line++;
+            else if (next == '/' && match('*')) nestLevel++;
+            else if (next == '*' && match('/')) nestLevel--;
+        };
+
+        if (nestLevel > 0 && isAtEnd()) {
+            Lox.error(line, "Unterminated block comment.");
         }
     }
 
