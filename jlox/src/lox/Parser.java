@@ -30,7 +30,7 @@ public class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(VAR) return varDeclaration());
+            if (match(VAR)) return varDeclaration();
             
             return statement();
         } catch(ParseError error) {
@@ -42,6 +42,7 @@ public class Parser {
     private Stmt statement() {
         if (match(IF)) return ifStatement();
         if (match(PRINT)) return printStatement();
+        if (match(WHILE)) return whileStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         return expressionStatement();
@@ -77,6 +78,15 @@ public class Parser {
         return new Stmt.Var(name, initializer);
     }
 
+    private Stmt whileStatement() {
+        consume(LEFT_PAREN, "Expect '(' after 'while'");
+        Expr condition = expression();
+        consume(RIGHT_PAREN, "Exprect ')' after condition");
+        Stmt body = statement();
+
+        return new Stmt.While(condition, body);
+    }
+
     private Stmt expressionStatement() {
         Expr expr = expression();
         consume(SEMICOLON, "Expect ; after expression;");
@@ -96,7 +106,7 @@ public class Parser {
     private Expr assignment() {
         Expr expr = or();
 
-        if (match(Equal)) {
+        if (match(EQUAL)) {
             Token equals = previous();
             Expr value = assignment();
         
@@ -104,7 +114,7 @@ public class Parser {
                 Token name = ((Expr.Variable)expr).name;
                 return new Expr.Assign(name, value);
             }
-            error(equals, "Invalid assignment target.");
+            throw error(equals, "Invalid assignment target.");
         }
 
         return expr;
@@ -118,6 +128,8 @@ public class Parser {
             Expr right = and();
             expr = new Expr.Logical(expr, operator, right);
         }
+
+        return expr;
     }
 
     private Expr and() {
@@ -128,6 +140,8 @@ public class Parser {
             Expr right = equality();
             expr = new Expr.Logical(expr, operator, right);
         }
+
+        return expr;
     }
 
     private Expr equality() {

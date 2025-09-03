@@ -31,7 +31,8 @@ public class GenerateAST {
                 "If         : Expr condition, Stmt thenBranch," +
                             " Stmt elseBranch",
                 "Print      : Expr expression",
-                "Var        : Token name, Expr initializer"
+                "Var        : Token name, Expr initializer",
+                "While      : Expr condition, Stmt body"
         ));
     }
 
@@ -91,7 +92,7 @@ public class GenerateAST {
             writer.println("    final " + field + ";");
         }
 
-        writer.println("  }");
+        writer.println("  }\n");
     }
 
     private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {

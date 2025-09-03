@@ -21,7 +21,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
-  Public Object visitLogicalExpr(Expr.Logical expr) {
+  public Object visitLogicalExpr(Expr.Logical expr) {
     Object left = evaluate(expr.left);
 
     if (expr.operator.type == TokenType.OR) {
@@ -123,7 +123,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
   }
 
-  @Override Void visitBlockStmt(Stmt.Block stmt) {
+  @Override
+  public Void visitBlockStmt(Stmt.Block stmt) {
     executeBlock(stmt.statements, new Environment(environment));
     return null;
   }
@@ -153,7 +154,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
-  public Void visitVarStmt(Stmt.Var) {
+  public Void visitVarStmt(Stmt.Var stmt) {
     Object value = null;
 
     if (stmt.initializer != null) {
@@ -161,6 +162,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     } 
 
     environment.define(stmt.name.lexeme, value);
+    return null;
+  }
+
+  @Override
+  public Void visitWhileStmt(Stmt.While stmt) {
+    while(isTruthy(evaluate(stmt.condition))) {
+      execute(stmt.body);
+    }
     return null;
   }
 
