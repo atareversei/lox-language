@@ -19,6 +19,8 @@ abstract class Stmt {
     R visitVarStmt(Var stmt);
 
     R visitWhileStmt(While stmt);
+
+    R visitClassStmt(Class stmt);
   }
 
   static class Block extends Stmt {
@@ -139,6 +141,24 @@ abstract class Stmt {
     final Stmt body;
   }
 
+  static class Class extends Stmt {
+    Class(Token name,
+          Expr.Variable superclass,
+          List<Stmt.Function> methods) {
+      this.name = name;
+      this.superclass = superclass;
+      this.methods = methods;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitClassStmt(this);
+    }
+
+    final Token name;
+    final Expr.Variable superclass;
+    final List<Stmt.Function> methods;
+  }
 
   abstract <R> R accept(Visitor<R> visitor);
 }
