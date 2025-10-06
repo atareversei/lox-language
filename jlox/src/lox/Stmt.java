@@ -5,24 +5,15 @@ import java.util.List;
 abstract class Stmt {
   interface Visitor<R> {
     R visitBlockStmt(Block stmt);
-
-    R visitExpressionStmt(Expression stmt);
-
-    R visitFunctionStmt(Function stmt);
-
-    R visitIfStmt(If stmt);
-
-    R visitPrintStmt(Print stmt);
-
-    R visitReturnStmt(Return stmt);
-
-    R visitVarStmt(Var stmt);
-
-    R visitWhileStmt(While stmt);
-
     R visitClassStmt(Class stmt);
+    R visitExpressionStmt(Expression stmt);
+    R visitFunctionStmt(Function stmt);
+    R visitIfStmt(If stmt);
+    R visitPrintStmt(Print stmt);
+    R visitReturnStmt(Return stmt);
+    R visitVarStmt(Var stmt);
+    R visitWhileStmt(While stmt);
   }
-
   static class Block extends Stmt {
     Block(List<Stmt> statements) {
       this.statements = statements;
@@ -34,6 +25,21 @@ abstract class Stmt {
     }
 
     final List<Stmt> statements;
+  }
+
+  static class Class extends Stmt {
+    Class(Token name, List<Stmt.Function> methods) {
+      this.name = name;
+      this.methods = methods;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitClassStmt(this);
+    }
+
+    final Token name;
+    final List<Stmt.Function> methods;
   }
 
   static class Expression extends Stmt {
@@ -141,24 +147,6 @@ abstract class Stmt {
     final Stmt body;
   }
 
-  static class Class extends Stmt {
-    Class(Token name,
-          Expr.Variable superclass,
-          List<Stmt.Function> methods) {
-      this.name = name;
-      this.superclass = superclass;
-      this.methods = methods;
-    }
-
-    @Override
-    <R> R accept(Visitor<R> visitor) {
-      return visitor.visitClassStmt(this);
-    }
-
-    final Token name;
-    final Expr.Variable superclass;
-    final List<Stmt.Function> methods;
-  }
 
   abstract <R> R accept(Visitor<R> visitor);
 }
