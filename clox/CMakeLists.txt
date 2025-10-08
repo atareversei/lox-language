@@ -8,4 +8,5 @@ add_executable(clox
     chunk.c
     memory.c
     debug.c
+    value.c
 )
