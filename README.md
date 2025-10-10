@@ -42,6 +42,3 @@ This repository contains two implementations of the **Lox** language from Robert
 
 * [*Crafting Interpreters* by Robert Nystrom](https://craftinginterpreters.com)
 * [Official book code](https://github.com/munificent/craftinginterpreters)
-
-Would you like me to generate **separate mini-READMEs** for `jlox/` and `clox/` (each with its exact compile/run instructions for your setup)?
-That’s often cleaner than one giant root README.
