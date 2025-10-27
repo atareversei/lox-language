@@ -6,6 +6,7 @@ set(CMAKE_C_STANDARD 99)
 add_executable(clox
         main.c
         chunk.c
+        object.c
         memory.c
         debug.c
         value.c
