@@ -8,6 +8,12 @@
 #define STACK_MAX 256
 
 typedef struct {
+  ObjFunction *function;
+  uint8_t *ip;
+  Value *slots;
+} CallFrame;
+
+typedef struct {
   Chunk* chunk;
   uint8_t* ip;
   Value stack[STACK_MAX];
