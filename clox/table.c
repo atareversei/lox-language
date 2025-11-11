@@ -114,10 +114,19 @@ ObjString *tableFindString(Table *table, const char *chars, int length, uint32_t
     Entry *entry = &table->entries[index];
     if (entry->key == NULL) {
       if (IS_NIL(entry->value)) return NULL;
-    } else if (entry->key->length == length && entry->key->hash == hash && memcmp(entry->key->chars, chars, length) == 0) {
+    } else if (entry->key->length == length && entry->key->hash == hash &&
+               memcmp(entry->key->chars, chars, length) == 0) {
       return entry->key;
     }
 
     index = (index + 1) % table->capacity;
+  }
+}
+
+void markTable(Table *table) {
+  for (int i = 0; i < table->capacity; i++) {
+    Entry *entry = &table->entries[i];
+    markObject((Obj *) entry->key);
+    markValue(entry->value);
   }
 }
