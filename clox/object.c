@@ -24,7 +24,7 @@ static Obj *allocateObject(size_t size, ObjType type) {
   return object;
 }
 
-ObjBoundMethod *newBoundMethod(Value receiver, ObjClosure* method) {
+ObjBoundMethod *newBoundMethod(Value receiver, ObjClosure *method) {
   ObjBoundMethod *bound = ALLOCATE_OBJ(ObjBoundMethod, OBJ_BOUND_METHOD);
   bound->receiver = receiver;
   bound->method = method;
@@ -147,6 +147,7 @@ void printObject(Value value) {
       break;
     case OBJ_INSTANCE:
       printf("%s instance", AS_INSTANCE(value)->klass->name->chars);
+      break;
     case OBJ_NATIVE:
       printf("<native fn>");
       break;

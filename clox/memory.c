@@ -76,9 +76,9 @@ static void blackenObject(Obj *object) {
 
   switch (object->type) {
     case OBJ_BOUND_METHOD: {
-      ObjBoundMethod *bound = (ObjBoundMethod*)object;
+      ObjBoundMethod *bound = (ObjBoundMethod *) object;
       markValue(bound->receiver);
-      markObject((Obj*)bound->method);
+      markObject((Obj *) bound->method);
       break;
     }
     case OBJ_CLASS: {
@@ -128,7 +128,8 @@ static void freeObject(Obj *object) {
       break;
     }
     case OBJ_CLASS: {
-      ObjClass *klass = (ObjClass*) object;
+      ObjClass *klass = (ObjClass *) object;
+      freeTable(&klass->methods);
       FREE(ObjClass, object);
       break;
     }
@@ -180,7 +181,7 @@ static void markRoots() {
       ) {
     markObject((Obj *) upvalue);
     markCompilerRoots();
-    markObject((Obj*)vm.initString);
+    markObject((Obj *) vm.initString);
   }
 
   markTable(&vm.globals);
@@ -242,7 +243,7 @@ void collectGarbage() {
 void freeObjects() {
   Obj *object = vm.objects;
   while (object != NULL) {
-    Obj *next = object = next;
+    Obj *next = object->next;
     freeObject(next);
     object = next;
   }
