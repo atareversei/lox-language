@@ -150,7 +150,7 @@ static bool callValue(Value callee, int argCount) {
 static bool invokeFromClass(ObjClass *klass, ObjString *name, int argCount) {
   Value method;
   if (!tableGet(&klass->methods, name, &method)) {
-    runtimeError("Undefined propertyu '%s'.", name->chars);
+    runtimeError("Undefined property '%s'.", name->chars);
     return false;
   }
   return call(AS_CLOSURE(method), argCount);
@@ -212,7 +212,7 @@ static ObjUpvalue *captureUpvalue(Value *local) {
   return createdUpvalue;
 }
 
-static void closeUpvariable(Value *last) {
+static void closeUpvalues(Value *last) {
   while (vm.openUpvalues != NULL && vm.openUpvalues->location >= last) {
     ObjUpvalue *upvalue = vm.openUpvalues;
     upvalue->closed = *upvalue->location;
@@ -221,7 +221,7 @@ static void closeUpvariable(Value *last) {
   }
 }
 
-static void defineMethods(ObjString *name) {
+static void defineMethod(ObjString *name) {
   Value method = peek(0);
   ObjClass *klass = AS_CLASS(peek(1));
   tableSet(&klass->methods, name, method);
@@ -257,8 +257,8 @@ static InterpreterResult run() {
     (frame->ip += 2, \
     (uint16_t)((frame->ip[-2] << 8) | frame->ip[-1]))
 
-#define READ_CONSTANT \
-    (frame->closure->function->chunk.constants.values[READ_BYTE()]) \
+#define READ_CONSTANT() \
+    (frame->closure->function->chunk.constants.values[READ_BYTE()])
 
 #define READ_STRING() AS_STRING(READ_CONSTANT())
 
@@ -271,7 +271,7 @@ static InterpreterResult run() {
     double b = AS_NUMBER(pop()); \
     double a = AS_NUMBER(pop()); \
     push(valueType(a op b));     \
-  } while (false)     \
+  } while (false)
 
   for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
@@ -326,7 +326,7 @@ static InterpreterResult run() {
         ObjString *name = READ_STRING();
         if (tableSet(&vm.globals, name, peek(0))) {
           tableDelete(&vm.globals, name);
-          runtimeError("Undefiend variable '%s'.", name->chars);
+          runtimeError("Undefined variable '%s'.", name->chars);
           return INTERPRET_RUNTIME_ERROR;
         }
         break;
@@ -495,12 +495,12 @@ static InterpreterResult run() {
         break;
       }
       case OP_CLOSE_UPVALUE:
-        closeUpvariable(vm.stackTop - 1);
+        closeUpvalues(vm.stackTop - 1);
         pop();
         break;
       case OP_RETURN: {
         Value result = pop();
-        closeUpvariable(frame->slots);
+        closeUpvalues(frame->slots);
         vm.frameCount--;
         if (vm.frameCount == 0) {
           pop();

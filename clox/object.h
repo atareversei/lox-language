@@ -18,7 +18,7 @@
 
 #define AS_BOUND_METHOD(value) ((ObjBoundMethod *)AS_OBJ(value))
 #define AS_CLASS(value)        ((ObjClass*)AS_OBJ(value))
-#define AS_INSTANCE(value)     ((ObjInstance*)AS_INSTANCE(value))
+#define AS_INSTANCE(value)     ((ObjInstance*)AS_OBJ(value))
 #define AS_CLOSURE(value)      ((ObjClosure*) AS_OBJ(value))
 #define AS_FUNCTION(value)     ((ObjFunction*)AS_OBJ(value))
 #define AS_NATIVE(value)       (((ObjNative*)AS_OBJ(value))->function)
