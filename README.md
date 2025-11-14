@@ -32,11 +32,11 @@ This repository contains two implementations of the **Lox** language from Robert
 
 * [x] Chunk & disassembler
 * [x] VM dispatch loop
-* [ ] Compiler
-* [ ] Closures
-* [ ] Garbage Collextion
-* [ ] Classes & inheritance
-* [ ] Optimization
+* [x] Compiler
+* [x] Closures
+* [x] Garbage Collextion
+* [x] Classes & inheritance
+* [x] Optimization
 
 ## References
 
